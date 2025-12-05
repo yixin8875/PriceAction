@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { terms } from './data';
 import { Category, Term } from './types';
-import { Search, X, BookOpen, BarChart2, TrendingUp, AlertTriangle, ArrowRight, Moon, Sun, Monitor } from 'lucide-react';
+import { Search, X, BookOpen, BarChart2, TrendingUp, AlertTriangle, ArrowRight, Moon, Sun, Monitor, Percent, Microscope } from 'lucide-react';
 import CandleVisualizer from './components/CandleVisualizer';
 
 const App: React.FC = () => {
@@ -39,6 +39,23 @@ const App: React.FC = () => {
       case Category.BREAKOUT: return 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-400/10 border-amber-200 dark:border-amber-400/20';
       default: return 'text-slate-500';
     }
+  };
+
+  const getProbabilityColor = (prob: string | undefined) => {
+    if (!prob) return 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700';
+    
+    // Simple checks for number ranges in the string
+    if (prob.includes('70') || prob.includes('80') || prob.includes('90')) {
+      return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800';
+    }
+    if (prob.includes('60')) {
+       return 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400 border-teal-200 dark:border-teal-800';
+    }
+    if (prob.includes('50')) {
+       return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800';
+    }
+    
+    return 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700';
   };
 
   return (
@@ -140,11 +157,18 @@ const App: React.FC = () => {
                 </p>
               </div>
 
-              <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed mb-4 h-[4.5rem]">
+              {/* Concept Preview */}
+              <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4 h-[3rem]">
                 {term.concept}
               </p>
 
-              <div className="flex items-center text-xs text-blue-600 dark:text-blue-500 font-bold opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+              {/* Probability Tag */}
+              <div className={`mb-4 inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold border ${getProbabilityColor(term.probability)}`}>
+                <Percent className="w-3 h-3" />
+                {term.probability || '未知'}
+              </div>
+
+              <div className="flex items-center text-xs text-blue-600 dark:text-blue-500 font-bold opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0 mt-auto">
                 Details <ArrowRight className="w-3 h-3 ml-1" />
               </div>
             </div>
@@ -180,9 +204,12 @@ const App: React.FC = () => {
                  </div>
                  <div>
                    <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{selectedTerm.fullName}</h2>
-                   <div className="flex items-center gap-2 mt-1">
+                   <div className="flex flex-wrap items-center gap-2 mt-1">
                       <span className={`text-[11px] font-bold px-2 py-0.5 rounded border ${getCategoryColor(selectedTerm.category)}`}>
                         {selectedTerm.category}
+                      </span>
+                      <span className={`text-[11px] font-bold px-2 py-0.5 rounded border flex items-center gap-1 ${getProbabilityColor(selectedTerm.probability)}`}>
+                        <Percent className="w-3 h-3" /> {selectedTerm.probability || '未知'}
                       </span>
                    </div>
                  </div>
@@ -200,7 +227,7 @@ const App: React.FC = () => {
               
               <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 
-                {/* Left Column: Visuals & Concept (2/5) */}
+                {/* Left Column: Visuals & Logic (2/5) */}
                 <div className="lg:col-span-2 space-y-6">
                    {/* Visualizer Card */}
                    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-1 shadow-sm overflow-hidden">
@@ -225,6 +252,18 @@ const App: React.FC = () => {
                         {selectedTerm.logic}
                       </p>
                    </div>
+                   
+                   {/* LTF / Microscope Card (New) */}
+                   {selectedTerm.ltfLogic && (
+                     <div className="bg-indigo-50 dark:bg-indigo-900/10 rounded-xl border border-indigo-100 dark:border-indigo-500/20 p-5 shadow-sm">
+                        <div className="mb-3 flex items-center gap-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                            <Microscope className="w-4 h-4" /> Lower Timeframe
+                        </div>
+                        <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed font-medium italic">
+                          {selectedTerm.ltfLogic}
+                        </p>
+                     </div>
+                   )}
                 </div>
 
                 {/* Right Column: Strategy & Content (3/5) */}

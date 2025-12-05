@@ -22,4 +22,6 @@ export interface Term {
   example: string;
   sentiment: Sentiment;
   highlight?: boolean; // For key concepts like Wedge
+  probability?: string; // Estimated success rate e.g., "High (60-70%)"
+  ltfLogic?: string; // What is happening on the lower timeframe?
 }
