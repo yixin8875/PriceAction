@@ -121,6 +121,67 @@ const CandleVisualizer: React.FC<CandleProps> = ({ term, isDark = true }) => {
           </g>
         );
 
+      case 'h2l2': // Two-Legged Move
+        return (
+          <g transform="translate(30, 30)">
+             {/* Trend */}
+             <Candle x={0} y={100} width={12} bodyHeight={40} wickHeight={10} color={theme.bull} delay={100} />
+             <Candle x={15} y={80} width={12} bodyHeight={40} wickHeight={10} color={theme.bull} delay={300} />
+             
+             {/* Leg 1 Down */}
+             <Candle x={30} y={80} width={12} bodyHeight={15} wickHeight={5} color={theme.bear} delay={500} />
+             <text x="30" y="70" fill={theme.bear} fontSize="8" className="animate-fade" style={{ animationDelay: '600ms' }}>L1</text>
+             
+             {/* Attempt to rally (Failed H1) */}
+             <Candle x={45} y={75} width={12} bodyHeight={10} wickHeight={5} color={theme.bull} delay={700} />
+             
+             {/* Leg 2 Down */}
+             <Candle x={60} y={85} width={12} bodyHeight={20} wickHeight={5} color={theme.bear} delay={900} />
+             <Candle x={75} y={90} width={12} bodyHeight={25} wickHeight={5} color={theme.bear} delay={1100} />
+             <text x="75" y="80" fill={theme.bear} fontSize="8" className="animate-fade" style={{ animationDelay: '1200ms' }}>L2</text>
+             
+             {/* H2 Entry Signal */}
+             <Candle x={95} y={60} width={15} bodyHeight={60} wickHeight={10} color={theme.bull} delay={1300} />
+             
+             <g className="animate-pop" style={{ animationDelay: '1500ms', opacity: 0 }}>
+                <text x="100" y="40" fill={theme.bull} fontSize="12" fontWeight="bold">H2 Buy</text>
+                <path d="M 105 45 L 105 55" stroke={theme.bull} strokeWidth="1" markerEnd="url(#arrow)" />
+             </g>
+          </g>
+        );
+      
+      case 'a2': // A2 at EMA
+        return (
+          <g transform="translate(30, 20)">
+            {/* EMA Line */}
+            <path d="M -10 130 Q 125 100 260 50" stroke={theme.accent} strokeWidth="4" fill="none" opacity="0.5" className="animate-draw" style={{ animationDuration: '1000ms' }} />
+            <text x="5" y="140" fill={theme.accent} fontSize="10" fontWeight="bold" opacity="0.7">20 EMA</text>
+
+            {/* Trend Candles */}
+            <Candle x={0} y={90} width={15} bodyHeight={30} wickHeight={10} color={theme.bull} delay={100} />
+            <Candle x={25} y={75} width={15} bodyHeight={35} wickHeight={10} color={theme.bull} delay={300} />
+            
+            {/* Pullback Leg 1 */}
+            <Candle x={50} y={80} width={15} bodyHeight={20} wickHeight={5} color={theme.bear} delay={500} />
+            
+            {/* Failed Attempt / Pause */}
+            <Candle x={75} y={85} width={15} bodyHeight={10} wickHeight={5} color={theme.neutral} filled={false} delay={700} />
+            
+            {/* Pullback Leg 2 Touching EMA */}
+            <Candle x={100} y={95} width={15} bodyHeight={20} wickHeight={10} color={theme.bear} delay={900} />
+            
+            {/* Signal Bar bouncing off EMA */}
+            <Candle x={125} y={80} width={15} bodyHeight={35} wickHeight={10} color={theme.bull} delay={1100} />
+            
+            {/* Entry */}
+            <g className="animate-pop" style={{ animationDelay: '1300ms', opacity: 0 }}>
+               <circle cx="132" cy="115" r="4" fill={theme.accent} />
+               <text x="120" y="60" fill={theme.bull} fontSize="12" fontWeight="bold">A2 Buy</text>
+               <path d="M 132 70 L 132 78" stroke={theme.bull} strokeWidth="2" markerEnd="url(#arrow)" />
+            </g>
+          </g>
+        );
+
       case 'slp': // Second Leg Push
         return (
           <g transform="translate(20, 40)">
